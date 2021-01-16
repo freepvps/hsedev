@@ -16,7 +16,7 @@ size_t get_size(const char* s) {
 }
 
 int main(int argc, char** argv) {
-    int* ptr = argc;
+    int* ptr = &argc;
     auto x = *(ptr + 1);  // mov
     auto y = ptr + 1;  // lea
 }
