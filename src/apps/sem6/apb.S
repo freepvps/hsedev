@@ -1,11 +1,13 @@
 SC: .asciz "%d%d"
 PR: .asciz "%d\n"
 
+#define F(A, B) movl %A, %B
+
     .text
     .global main
 main:
     pushl %ebp
-    mov %esp, %ebp
+    F(esp, ebp)
     andl $-16, %esp
     subl $32, %esp
 
