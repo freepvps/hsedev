@@ -4,7 +4,7 @@ PR: .asciz "%d\n"
     .text
     .global main
 
-write_int32:  // non-cdecl
+write_value:  // non-cdecl
     subl $12, %esp
     movl %eax, 4(%esp)
     movl $PR, (%esp)
@@ -12,18 +12,18 @@ write_int32:  // non-cdecl
     addl $12, %esp
     ret
 
-max_int32:  // non-cdecl, magic fastcall(eax, ecx)
+maximum:  // non-cdecl, magic fastcall(eax, ecx)
     cmp %eax, %ecx
-    jl max_int32_end
+    jl maximum_end
     mov %ecx, %eax
-max_int32_end:
+maximum_end:
     ret
 
-min_int32:  // non-cdecl, magic fastcall(eax, ecx)
+minimum:  // non-cdecl, magic fastcall(eax, ecx)
     cmp %eax, %ecx
-    jg min_int32_end
+    jg minimum_end
     mov %ecx, %eax
-min_int32_end:
+minimum_end:
     ret
 
 main:
@@ -53,21 +53,21 @@ loop_begin:
     // ebx=MAX(l1, l2)
     mov 20(%esp), %eax
     mov 28(%esp), %ecx
-    call max_int32
+    call maximum
     movl %eax, %ebx
 
     // eax=MIN(r1, r2)
     mov 24(%esp), %eax
     mov 32(%esp), %ecx
-    call min_int32
+    call minimum
 
     // eax=MAX(eax - ebx, 0)
     subl %ebx, %eax
     mov $0, %ecx
-    call max_int32
+    call maximum
 
     // PRINTF
-    call write_int32
+    call write_value
 
     // STEP
     jmp loop_begin

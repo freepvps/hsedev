@@ -9,7 +9,7 @@ ZERO:
     .text
     .global main
 
-write_double:  // non-cdecl
+write_value:  // non-cdecl
     subl $12, %esp
     movsd %xmm0, 4(%esp)
     movl $PR, (%esp)
@@ -17,18 +17,18 @@ write_double:  // non-cdecl
     addl $12, %esp
     ret
 
-max_double:  // non-cdecl, magic fastcall(eax, ecx)
+maximum:  // non-cdecl, magic fastcall(eax, ecx)
     comisd %xmm0, %xmm1
-    jbe max_double_end
+    jbe maximum_end
     movsd %xmm1, %xmm0
-max_double_end:
+maximum_end:
     ret
 
-min_double:  // non-cdecl, magic fastcall(eax, ecx)
+minimum:  // non-cdecl, magic fastcall(eax, ecx)
     comisd %xmm0, %xmm1
-    jae min_double_end
+    jae minimum_end
     movsd %xmm1, %xmm0
-min_double_end:
+minimum_end:
     ret
 
 main:
@@ -58,13 +58,13 @@ loop_begin:
     // xmm2=MAX(l1, l2)
     movsd 20(%esp), %xmm0
     movsd 36(%esp), %xmm1
-    call max_double
+    call maximum
     movsd %xmm0, %xmm2
 
     // xmm0=MIN(r1, r2)
     movsd 28(%esp), %xmm0
     movsd 44(%esp), %xmm1
-    call min_double
+    call minimum
 
     // xmm0=MAX(xmm0 - xmm2, 0)
     subsd %xmm2, %xmm0
@@ -72,7 +72,7 @@ loop_begin:
     maxsd %xmm1, %xmm0
 
     // // PRINTF
-    call write_double
+    call write_value
 
     // STEP
     jmp loop_begin
