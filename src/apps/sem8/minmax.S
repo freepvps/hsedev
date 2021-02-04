@@ -47,7 +47,8 @@ loop_begin:
     lea 32(%esp), %eax  // r2
     mov %eax, 16(%esp)
     call scanf
-    mov %eax, %esi
+    cmp $4, %eax
+    jnz loop_end
 
     // ebx=MAX(l1, l2)
     mov 20(%esp), %eax
@@ -69,8 +70,8 @@ loop_begin:
     call write_int32
 
     // STEP
-    cmp $4, %esi
-    jz loop_begin
+    jmp loop_begin
+loop_end:
 
     xor %eax, %eax
     mov %ebp, %esp
