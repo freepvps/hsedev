@@ -1,4 +1,4 @@
-SC: .string "%lf%lf"
+SC: .string "%f%f"
 PR: .string "%.10g\n"
 
     .text
@@ -11,16 +11,17 @@ main:
     subl $48, %esp
 
     lea 12(%esp), %eax
-    lea 20(%esp), %ebx
+    lea 16(%esp), %ebx
     movl %ebx, 8(%esp)
     movl %eax, 4(%esp)
     movl $SC, (%esp)
     call scanf
 
-    movsd 12(%esp), %xmm0
-    movsd 20(%esp), %xmm1
+    movss 12(%esp), %xmm0
+    movss 16(%esp), %xmm1
 
-    addsd %xmm1, %xmm0  // SSE
+    addss %xmm1, %xmm0  // SSE
+    cvtss2sd %xmm0, %xmm0
     movsd %xmm0, 4(%esp)
     movl $PR, (%esp)
     call printf

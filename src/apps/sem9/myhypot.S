@@ -20,7 +20,11 @@ main:
     movsd 12(%esp), %xmm0
     movsd 20(%esp), %xmm1
 
+    mulsd %xmm0, %xmm0
+    mulsd %xmm1, %xmm1
+
     addsd %xmm1, %xmm0  // SSE
+    sqrtsd %xmm0, %xmm0
     movsd %xmm0, 4(%esp)
     movl $PR, (%esp)
     call printf
