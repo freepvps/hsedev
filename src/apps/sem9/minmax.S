@@ -11,7 +11,7 @@ ZERO:
 
 write_value:  // non-cdecl
     subl $12, %esp
-    movsd %xmm0, 4(%esp)
+    movd %xmm0, 4(%esp)
     movl $PR, (%esp)
     call printf
     addl $12, %esp
