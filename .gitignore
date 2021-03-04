@@ -4,3 +4,4 @@ bin/
 *.o
 app
 *.out
+core

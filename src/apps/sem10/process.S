@@ -24,11 +24,11 @@ main_loop_4:
     cmp $4, %ecx
     jl main_loop_end_4
 
-    movups (%eax), %xmm0
+    movups (%eax), %xmm0  // unaligned mov packed single
     movups (%ebx), %xmm1
-    mulps %xmm0, %xmm1
-    movups %xmm1, (%esp)
-    addss (%esp), %xmm2
+    mulps %xmm0, %xmm1  // mul packed single
+    movaps %xmm1, (%esp)  // aligned mov packed single
+    addss (%esp), %xmm2  // add single single
     addss 4(%esp), %xmm2
     addss 8(%esp), %xmm2
     addss 12(%esp), %xmm2
@@ -40,13 +40,13 @@ main_loop_4:
 main_loop_end_4:
 
 main_loop_1:
-    cmpl $1,  %ecx
+    cmpl $1, %ecx
     jl main_loop_end_1
 
-    movss (%eax), %xmm0
+    movss (%eax), %xmm0  // mov single single
     movss (%ebx), %xmm1
-    mulss %xmm0, %xmm1
-    addss %xmm1, %xmm2
+    mulss %xmm0, %xmm1  // mul single single
+    addss %xmm1, %xmm2  // add single single
 
     subl $1, %ecx
     lea 4(%eax), %eax
@@ -54,6 +54,7 @@ main_loop_1:
     jmp main_loop_1
 main_loop_end_1:
 
+    // mov float from %xmm2 to coprocessor x87 stack
     movss %xmm2, (%esp)
     flds (%esp)
 
