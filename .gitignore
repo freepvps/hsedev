@@ -2,6 +2,8 @@ build/
 bin/
 .vscode/
 *.o
+*.so
+*.log
 app
 *.out
 core
