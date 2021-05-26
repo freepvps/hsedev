@@ -8,6 +8,7 @@
 #include <string.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <inttypes.h>
 
 int main(int argc, const char** argv) {
     if (argc < 3) {
@@ -25,6 +26,8 @@ int main(int argc, const char** argv) {
     if (inet_pton(PF_INET, host, &in_addr.sin_addr) > 0) {
         in_addr.sin_port = htons(port);
         in_addr.sin_family = PF_INET;
+        uint32_t addr_value = ntohl(in_addr.sin_addr.s_addr);
+        printf("%"PRIx32"\n", addr_value);
     } else {
         perror("parse addr");
         return -1;
@@ -58,8 +61,6 @@ int main(int argc, const char** argv) {
         }
         fwrite(buffer, (size_t)res, 1, stdout);
     }
-
-    close(fd);
 
     return 0;
 }

@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <fcntl.h>
+#include <unistd.h>
 
     //    int getaddrinfo(const char *restrict node,
     //                    const char *restrict service,
@@ -15,13 +16,20 @@
 
 void dump_addr_info(struct addrinfo* addr) {
     while (addr != NULL) {
-        struct sockaddr* sock_addr = addr->ai_addr;
-        if (sock_addr->sa_family == AF_INET) {
+        void* sock_addr = (void*)addr->ai_addr;
+        sa_family_t family = *(sa_family_t*)sock_addr;
+
+        if (family == AF_INET) {
             char buf[INET_ADDRSTRLEN + 1];
             struct sockaddr_in* addr_v4 = (struct sockaddr_in*)sock_addr;
+            // ipv4/ipv6 address
+            // ip address + port
             inet_ntop(AF_INET, &addr_v4->sin_addr, buf, INET_ADDRSTRLEN);
+
+            uint32_t ip_value = addr_v4->sin_addr.s_addr;
+
             printf("%s:%d\n", buf, ntohs(addr_v4->sin_port));
-        } else if (sock_addr->sa_family == AF_INET6) {
+        } else if (family == AF_INET6) {
             char buf[INET6_ADDRSTRLEN + 1];
             struct sockaddr_in6* addr_6 = (struct sockaddr_in6*)sock_addr;
             inet_ntop(AF_INET6, &addr_6->sin6_addr, buf, INET6_ADDRSTRLEN);
@@ -47,7 +55,11 @@ int ensure_send(int fd, const char* s) {
 
 int main() {
     struct addrinfo* addr;
-    if (getaddrinfo("ya.ru", "http", NULL, &addr) == -1) {
+    struct addrinfo filter;
+    memset(&filter, 0, sizeof(filter));
+    filter.ai_socktype = SOCK_STREAM;
+    filter.ai_protocol = IPPROTO_TCP;
+    if (getaddrinfo("google.com", "80", &filter, &addr) == -1) {
         perror("getaddrinfo");
         return -1;
     }
